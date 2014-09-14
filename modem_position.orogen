@@ -1,0 +1,11 @@
+name "modem_position"
+import_types_from "modem_positionTypes.hpp"
+import_types_from "base"
+task_context "ModemPositionSender" do
+    needs_configuration
+    property "config_value", "/std/string"
+    input_port "position_samples", "base::samples::RigidBodyState"
+    output_port "modem_data", "std/vector<char>"
+    periodic 0.1
+end
+
