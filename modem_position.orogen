@@ -1,11 +1,23 @@
 name "modem_position"
 import_types_from "modem_positionTypes.hpp"
 import_types_from "base"
+import_types_from "modemdriver/modemdriverTypes_.hpp"
 task_context "ModemPositionSender" do
     needs_configuration
-    property "config_value", "/std/string"
     input_port "position_samples", "base::samples::RigidBodyState"
-    output_port "modem_data", "std/vector<char>"
-    periodic 0.1
+    output_port "modem_data", "modemdriver/modem_message"
+    port_driven
+end
+task_context "ModemPositionReceiver" do
+    needs_configuration
+    output_port "position_samples", "base::samples::RigidBodyState"
+    input_port "modem_data", "modemdriver/modem_message"
+    port_driven
 end
 
+deployment 'position_sender' do
+    task('pos_sender', "ModemPositionSender")
+end
+deployment 'position_receiver' do
+    task('pos_receiver', "ModemPositionReceiver")
+end
